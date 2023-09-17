@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "558520843985",
+    "project_id": "isromission-28510",
+    "storage_bucket": "isromission-28510.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558520843985:android:2540b685a824cb9102cff0",
+        "android_client_info": {
+          "package_name": "com.darshankomu.isro_mission"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqxzmPosY4gqoR4xK8amb7Corcm8gzM-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
