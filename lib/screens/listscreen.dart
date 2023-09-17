@@ -41,9 +41,14 @@ class _ListScreenState extends State<ListScreen> {
 
 
   String _url = "https://darshankomu.com/apps/isromission/api/getdata.php";
+  String _url_indian_player = "https://darshankomu.com/apps/isromission/api/getIndianPlayer.php";
+  String _url_reentry = "https://darshankomu.com/apps/isromission/api/getreentry.php";
+
   late Stream _stream;
   late http.Response response;
   List<spacecraft_api> spacecraft_list = [];
+  List<spacecraft_api> spacecraft_list_indian_player = [];
+  List<spacecraft_api> spacecraft_list_reentry = [];
 
   bool loadingNewData = false;
   bool reverseList = false;
@@ -63,11 +68,41 @@ class _ListScreenState extends State<ListScreen> {
     }
   }
 
+  Future<void> fetchDataIndianPlayer() async {
+    final response = await http.get(Uri.parse(_url_indian_player));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      spacecraft_list_indian_player = jsonData.map((data) => spacecraft_api.fromJson(data)).toList();
+      setState(() {
+        loadingNewData = true;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<void> fetchDataReentry() async {
+    final response = await http.get(Uri.parse(_url_reentry));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      spacecraft_list_reentry = jsonData.map((data) => spacecraft_api.fromJson(data)).toList();
+      setState(() {
+        loadingNewData = true;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 
 
   @override
   void initState() {
     fetchData();
+    fetchDataIndianPlayer();
+    fetchDataReentry();
 
     // TODO: implement initState
     super.initState();
@@ -243,7 +278,292 @@ class _ListScreenState extends State<ListScreen> {
         );
 
       }
-    else {
+    else
+    if(widget.listIndex ==4 )
+    {
+      return Scaffold(
+
+        appBar: AppBar(title: Text('Re-entry Missions',
+            style: GoogleFonts.nunito(textStyle: TextStyle(
+              color:Colors.white,
+              letterSpacing: 0.5,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,)
+
+            )),
+          backgroundColor: Colors.blueAccent.shade400,
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.sort, color: Colors.white),
+              onPressed: ()   {
+                if(reverseList == false)
+                {
+
+                  setState(() {
+                    reverseList = true;
+                  });
+                }
+                else
+                {
+                  setState(() {
+                    reverseList = false;
+                  });                      }
+              },
+            ),
+          ],
+        ),
+
+
+
+        body:  (loadingNewData) ?    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView.builder(
+              reverse: reverseList,
+              shrinkWrap: true,
+              itemCount: spacecraft_list_reentry.length,
+              itemBuilder: (BuildContext context, int index) {
+                final space = spacecraft_list_reentry[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    _open(space.link);
+                  },
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.5, // Set border width
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(
+                                5.0) //                 <--- border radius here
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(space.name,
+                              style: GoogleFonts.nunito(textStyle: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800,))
+                          ),
+                        ), // Display item name
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, bottom: 0),
+                              child: Text(
+                                  space.launchDate.length != "" ? "Launch Date:  ${space.launchDate}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  space.launchVehicle.length != "" ? "Launch vehicle:  ${space.launchVehicle}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Orbit Type :  ${space.orbitType}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Application :  ${space.application}	" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ) : Center(child: CircularProgressIndicator(color: Colors.blueAccent.shade400,)),
+
+
+      );
+
+    }
+    else
+    if(widget.listIndex ==6 )
+    {
+      return Scaffold(
+
+        appBar: AppBar(title: Text('Indian Private player Satellites',
+            style: GoogleFonts.nunito(textStyle: TextStyle(
+              color:Colors.white,
+              letterSpacing: 0.5,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,)
+
+            )),
+          backgroundColor: Colors.blueAccent.shade400,
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.sort, color: Colors.white),
+              onPressed: ()   {
+                if(reverseList == false)
+                {
+
+                  setState(() {
+                    reverseList = true;
+                  });
+                }
+                else
+                {
+                  setState(() {
+                    reverseList = false;
+                  });                      }
+              },
+            ),
+          ],
+        ),
+
+
+
+        body:  (loadingNewData) ?    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView.builder(
+              reverse: reverseList,
+              shrinkWrap: true,
+              itemCount: spacecraft_list_indian_player.length,
+              itemBuilder: (BuildContext context, int index) {
+                final space = spacecraft_list_indian_player[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    _open(space.link);
+                  },
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.5, // Set border width
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(
+                                5.0) //                 <--- border radius here
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(space.name,
+                              style: GoogleFonts.nunito(textStyle: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800,))
+                          ),
+                        ), // Display item name
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, bottom: 0),
+                              child: Text(
+                                  space.launchDate.length != "" ? "Launch Date:  ${space.launchDate}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  space.launchVehicle.length != "" ? "Launch vehicle:  ${space.launchVehicle}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Orbit Type :  ${space.orbitType}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Application :  ${space.application}	" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ) : Center(child: CircularProgressIndicator(color: Colors.blueAccent.shade400,)),
+
+
+      );
+
+    }
+    else
+    {
       return Container();
     }
 
