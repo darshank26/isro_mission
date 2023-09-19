@@ -5,10 +5,10 @@ const ksecondcolor = Color(0xff3ba2ff);
 const kthirdcolor = Color(0xff006ac0);
 
 
-var androidAppShareLink = "https://play.google.com/store/apps/details?id=com.darshankomu.public_apis";
+var androidAppShareLink = "https://play.google.com/store/apps/details?id=com.darshankomu.isro_mission";
 
-var androidShareText = "Download Public API's App from below link";
+var androidShareText = "Download ISRO Mission app from below link";
 
-var androidAppIdValue = "com.darshankomu.public_apis";
+var androidAppIdValue = "com.darshankomu.isro_mission";
 
 var iOSAppIdValue = "AddiOSAppId";

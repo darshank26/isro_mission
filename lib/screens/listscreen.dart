@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:isro_mission/model/data_api.dart';
 import 'package:isro_mission/model/data_api.dart';
 import 'package:isro_mission/model/data_api.dart';
+import 'package:isro_mission/model/foreign_Data_api.dart';
 import 'package:isro_mission/screens/searchpage.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:async';
@@ -43,12 +44,19 @@ class _ListScreenState extends State<ListScreen> {
   String _url = "https://darshankomu.com/apps/isromission/api/getdata.php";
   String _url_indian_player = "https://darshankomu.com/apps/isromission/api/getIndianPlayer.php";
   String _url_reentry = "https://darshankomu.com/apps/isromission/api/getreentry.php";
+  String _url_students = "https://darshankomu.com/apps/isromission/api/getstudentmission.php";
+  String _url_launch = "https://darshankomu.com/apps/isromission/api/getlaunchmission.php";
+  String _url_foreign = "https://darshankomu.com/apps/isromission/api/getforeign.php";
 
   late Stream _stream;
   late http.Response response;
   List<spacecraft_api> spacecraft_list = [];
   List<spacecraft_api> spacecraft_list_indian_player = [];
   List<spacecraft_api> spacecraft_list_reentry = [];
+  List<spacecraft_api> spacecraft_list_students = [];
+  List<spacecraft_api> spacecraft_list_launch = [];
+  List<foreign_api> spacecraft_list_foreign = [];
+
 
   bool loadingNewData = false;
   bool reverseList = false;
@@ -97,12 +105,57 @@ class _ListScreenState extends State<ListScreen> {
   }
 
 
+  Future<void> fetchDataStudents() async {
+    final response = await http.get(Uri.parse(_url_students));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      spacecraft_list_students = jsonData.map((data) => spacecraft_api.fromJson(data)).toList();
+      setState(() {
+        loadingNewData = true;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<void> fetchDataLaunchMission() async {
+    final response = await http.get(Uri.parse(_url_foreign));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      spacecraft_list_launch = jsonData.map((data) => spacecraft_api.fromJson(data)).toList();
+      setState(() {
+        loadingNewData = true;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<void> fetchDataForeignMission() async {
+    final response = await http.get(Uri.parse(_url_foreign));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      spacecraft_list_foreign = jsonData.map((data) => foreign_api.fromJson(data)).toList();
+      setState(() {
+        loadingNewData = true;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 
   @override
   void initState() {
     fetchData();
     fetchDataIndianPlayer();
     fetchDataReentry();
+    fetchDataStudents();
+    fetchDataLaunchMission();
+    fetchDataForeignMission();
 
     // TODO: implement initState
     super.initState();
@@ -279,6 +332,290 @@ class _ListScreenState extends State<ListScreen> {
 
       }
     else
+    if(widget.listIndex ==2 )
+    {
+      return Scaffold(
+
+        appBar: AppBar(title: Text('Launch Missions',
+            style: GoogleFonts.nunito(textStyle: TextStyle(
+              color:Colors.white,
+              letterSpacing: 0.5,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,)
+
+            )),
+          backgroundColor: Colors.blueAccent.shade400,
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.sort, color: Colors.white),
+              onPressed: ()   {
+                if(reverseList == false)
+                {
+
+                  setState(() {
+                    reverseList = true;
+                  });
+                }
+                else
+                {
+                  setState(() {
+                    reverseList = false;
+                  });                      }
+              },
+            ),
+          ],
+        ),
+
+
+
+        body:  (loadingNewData) ?    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView.builder(
+              reverse: reverseList,
+              shrinkWrap: true,
+              itemCount: spacecraft_list_launch.length,
+              itemBuilder: (BuildContext context, int index) {
+                final space = spacecraft_list_launch[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    _open(space.link);
+                  },
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.5, // Set border width
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(
+                                5.0) //                 <--- border radius here
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(space.name,
+                              style: GoogleFonts.nunito(textStyle: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800,))
+                          ),
+                        ), // Display item name
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, bottom: 0),
+                              child: Text(
+                                  space.launchDate.length != "" ? "Launch Date:  ${space.launchDate}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  space.launchVehicle.length != "" ? "Launch vehicle:  ${space.launchVehicle}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Country :  ${space.orbitType}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Mass :  ${space.application}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ) : Center(child: CircularProgressIndicator(color: Colors.blueAccent.shade400,)),
+
+
+      );
+
+    }
+    else
+    if(widget.listIndex ==3 )
+    {
+      return Scaffold(
+
+        appBar: AppBar(title: Text('Students Satellites',
+            style: GoogleFonts.nunito(textStyle: TextStyle(
+              color:Colors.white,
+              letterSpacing: 0.5,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,)
+
+            )),
+          backgroundColor: Colors.blueAccent.shade400,
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.sort, color: Colors.white),
+              onPressed: ()   {
+                if(reverseList == false)
+                {
+
+                  setState(() {
+                    reverseList = true;
+                  });
+                }
+                else
+                {
+                  setState(() {
+                    reverseList = false;
+                  });                      }
+              },
+            ),
+          ],
+        ),
+
+
+
+        body:  (loadingNewData) ?    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView.builder(
+              reverse: reverseList,
+              shrinkWrap: true,
+              itemCount: spacecraft_list_students.length,
+              itemBuilder: (BuildContext context, int index) {
+                final space = spacecraft_list_students[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    _open(space.link);
+                  },
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.5, // Set border width
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(
+                                5.0) //                 <--- border radius here
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(space.name,
+                              style: GoogleFonts.nunito(textStyle: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800,))
+                          ),
+                        ), // Display item name
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, bottom: 0),
+                              child: Text(
+                                  space.launchDate.length != "" ? "Launch Date:  ${space.launchDate}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  space.launchVehicle.length != "" ? "Launch vehicle:  ${space.launchVehicle}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Orbit Type :  ${space.orbitType}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Application :  ${space.application}	" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ) : Center(child: CircularProgressIndicator(color: Colors.blueAccent.shade400,)),
+
+
+      );
+
+    }
+    else
     if(widget.listIndex ==4 )
     {
       return Scaffold(
@@ -395,6 +732,148 @@ class _ListScreenState extends State<ListScreen> {
                               padding: const EdgeInsets.only(top:8.0, bottom: 0),
                               child: Text(
                                   "Application :  ${space.application}	" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ) : Center(child: CircularProgressIndicator(color: Colors.blueAccent.shade400,)),
+
+
+      );
+
+    }
+    else
+    if(widget.listIndex == 5 )
+    {
+      return Scaffold(
+
+        appBar: AppBar(title: Text('Foreign Satellites',
+            style: GoogleFonts.nunito(textStyle: TextStyle(
+              color:Colors.white,
+              letterSpacing: 0.5,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,)
+
+            )),
+          backgroundColor: Colors.blueAccent.shade400,
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.sort, color: Colors.white),
+              onPressed: ()   {
+                if(reverseList == false)
+                {
+
+                  setState(() {
+                    reverseList = true;
+                  });
+                }
+                else
+                {
+                  setState(() {
+                    reverseList = false;
+                  });                      }
+              },
+            ),
+          ],
+        ),
+
+
+
+        body:  (loadingNewData) ?    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView.builder(
+              reverse: reverseList,
+              shrinkWrap: true,
+              itemCount: spacecraft_list_foreign.length,
+              itemBuilder: (BuildContext context, int index) {
+                final space = spacecraft_list_foreign[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    // _open(space.link);
+                  },
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.5, // Set border width
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(
+                                5.0) //                 <--- border radius here
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(space.name,
+                              style: GoogleFonts.nunito(textStyle: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800,))
+                          ),
+                        ), // Display item name
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, bottom: 0),
+                              child: Text(
+                                  space.launchDate.length != "" ? "Launch Date:  ${space.launchDate}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  space.launchVehicle.length != "" ? "Launch vehicle:  ${space.launchVehicle}"	 : "-" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Country :  ${space.orbitType}" ,
+                                  style: GoogleFonts.openSans(textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w600,))
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0, bottom: 0),
+                              child: Text(
+                                  "Mass :  ${space.application}	" ,
                                   style: GoogleFonts.openSans(textStyle: TextStyle(
                                     fontSize: 13,
                                     color: Colors.black54,

@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isro_mission/screens/listscreen.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../utils/arc.dart';
+import '../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -45,7 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text("ISRO Space Mission",style: TextStyle(fontSize: 24.0,),),
         centerTitle: true,
-      ),
+        actions: [
+          IconButton(
+            icon: new Icon(Icons.star_rate, color: Colors.orange),
+            onPressed: ()   {
+              LaunchReview.launch(
+                androidAppId: androidAppIdValue,
+                iOSAppId: iOSAppIdValue,);
+
+            })
+
+    ],
+
+  ),
       body:  SingleChildScrollView(
         child: Column(
           children: [
@@ -132,53 +146,59 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      color: Colors.pink.shade400,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left:8.0),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text('Launch \nMissions',
-                                      style: GoogleFonts.nunito(textStyle: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,)
-                                      )),
-                                  ElevatedButton(
-                                    //on pressed
-                                    onPressed: () async {},
-                                    child: Text('94',
+                  GestureDetector(
+                    onTap : () {
+                      Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ListScreen(listIndex : 2)));
+
+                    },
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        color: Colors.pink.shade400,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left:8.0),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text('Launch \nMissions',
                                         style: GoogleFonts.nunito(textStyle: TextStyle(
                                           color: Colors.white,
                                           letterSpacing: 0.5,
-                                          fontSize: 20,
+                                          fontSize: 28,
                                           fontWeight: FontWeight.bold,)
                                         )),
-                                    //style section code here
-                                    style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all<double>(0),
-                                      shape:
-                                      MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                    ElevatedButton(
+                                      //on pressed
+                                      onPressed: () async {},
+                                      child: Text('94',
+                                          style: GoogleFonts.nunito(textStyle: TextStyle(
+                                            color: Colors.white,
+                                            letterSpacing: 0.5,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,)
                                           )),
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      //style section code here
+                                      style: ButtonStyle(
+                                        elevation: MaterialStateProperty.all<double>(0),
+                                        shape:
+                                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            )),
+                                        backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      ),
                                     ),
-                                  ),
 
 
-                                ]),
+                                  ]),
+                            ),
                           ),
                         ),
                       ),
@@ -201,53 +221,59 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      color: Colors.deepPurple.shade400,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right:8.0),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text('Student \nSatellites',
-                                      style: GoogleFonts.nunito(textStyle: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,)
-                                      )),
-                                  ElevatedButton(
-                                    //on pressed
-                                    onPressed: () async {},
-                                    child: Text('15',
+                  GestureDetector(
+                    onTap : () {
+                      Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ListScreen(listIndex : 3)));
+
+                    },
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        color: Colors.deepPurple.shade400,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right:8.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text('Student \nSatellites',
                                         style: GoogleFonts.nunito(textStyle: TextStyle(
                                           color: Colors.white,
                                           letterSpacing: 0.5,
-                                          fontSize: 20,
+                                          fontSize: 28,
                                           fontWeight: FontWeight.bold,)
                                         )),
-                                    //style section code here
-                                    style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all<double>(0),
-                                      shape:
-                                      MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                    ElevatedButton(
+                                      //on pressed
+                                      onPressed: () async {},
+                                      child: Text('15',
+                                          style: GoogleFonts.nunito(textStyle: TextStyle(
+                                            color: Colors.white,
+                                            letterSpacing: 0.5,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,)
                                           )),
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      //style section code here
+                                      style: ButtonStyle(
+                                        elevation: MaterialStateProperty.all<double>(0),
+                                        shape:
+                                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            )),
+                                        backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      ),
                                     ),
-                                  ),
 
 
-                                ]),
+                                  ]),
+                            ),
                           ),
                         ),
                       ),
@@ -348,53 +374,59 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      color: Colors.red.shade400,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right:8.0),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text('Foreign \nSatellites',
-                                      style: GoogleFonts.nunito(textStyle: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,)
-                                      )),
-                                  ElevatedButton(
-                                    //on pressed
-                                    onPressed: () async {},
-                                    child: Text('431',
+                  GestureDetector(
+                    onTap : () {
+                      Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ListScreen(listIndex : 5)));
+
+                    },
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        color: Colors.red.shade400,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right:8.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text('Foreign \nSatellites',
                                         style: GoogleFonts.nunito(textStyle: TextStyle(
                                           color: Colors.white,
                                           letterSpacing: 0.5,
-                                          fontSize: 20,
+                                          fontSize: 28,
                                           fontWeight: FontWeight.bold,)
                                         )),
-                                    //style section code here
-                                    style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all<double>(0),
-                                      shape:
-                                      MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                    ElevatedButton(
+                                      //on pressed
+                                      onPressed: () async {},
+                                      child: Text('431',
+                                          style: GoogleFonts.nunito(textStyle: TextStyle(
+                                            color: Colors.white,
+                                            letterSpacing: 0.5,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,)
                                           )),
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      //style section code here
+                                      style: ButtonStyle(
+                                        elevation: MaterialStateProperty.all<double>(0),
+                                        shape:
+                                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            )),
+                                        backgroundColor: MaterialStateProperty.all<Color>(Colors.black54),
+                                      ),
                                     ),
-                                  ),
 
 
-                                ]),
+                                  ]),
+                            ),
                           ),
                         ),
                       ),
@@ -496,25 +528,44 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'About',
-          ),
-
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.favorite_border),
+      //       label: 'favorite',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'About',
+      //     ),
+      //
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.favorite_border),
+      //       label: 'favorite',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'About',
+      //     ),
+      //
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
 
     );
   }
